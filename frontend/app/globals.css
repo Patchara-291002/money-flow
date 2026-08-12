@@ -1,0 +1,87 @@
+@import "tailwindcss";
+
+:root {
+  /* Backgrounds */
+  --background:          #1D1D1D;
+  --background-card:     #272727;
+  --background-sidebar:  #161616;                  /* เพิ่ม — sidebar เข้มกว่า card */
+  --background-subtle:   rgba(243,245,242,0.05);   /* เปลี่ยน — ใช้ rgba ตาม design จริง */
+
+  /* Text */
+  --foreground:          #F3F5F2;
+  --foreground-muted:    rgba(243,245,242,0.5);    /* เปลี่ยน — ตาม design จริง */
+  --foreground-subtle:   rgba(243,245,242,0.32);   /* เปลี่ยน — ตาม design จริง */
+
+  /* Border */
+  --border:              rgba(243,245,242,0.06);   /* เปลี่ยน — ตาม design จริง */
+  --border-strong:       rgba(243,245,242,0.12);   /* เปลี่ยน — ตาม design จริง */
+
+  /* Brand */
+  --primary:             #4BDB6A;
+  --primary-foreground:  #10240F;                  /* เปลี่ยน — เข้มกว่า #1D1D1D นิดนึง */
+  --primary-bg:          rgba(75,219,106,0.14);    /* เพิ่ม — badge, icon bg */
+
+  /* Semantic */
+  --danger:              #EF5350;                  /* เปลี่ยน — จาก #F09595 */
+  --danger-border:       rgba(239,83,80,0.28);     /* เปลี่ยน — border ของ card */
+  --danger-bg:           rgba(239,83,80,0.16);     /* เปลี่ยน — icon bg */
+
+  --warning:             #EF9F27;
+  --warning-border:      rgba(239,159,39,0.28);    /* เพิ่ม */
+  --warning-bg:          rgba(239,159,39,0.16);    /* เปลี่ยน */
+
+  --info:                #85B7EB;
+  --info-border:         rgba(133,183,235,0.28);   /* เพิ่ม */
+  --info-bg:             rgba(133,183,235,0.16);   /* เปลี่ยน */
+
+  --purple:              #AFA9EC;
+  --purple-border:       rgba(175,169,236,0.28);   /* เพิ่ม */
+  --purple-bg:           rgba(175,169,236,0.16);   /* เปลี่ยน */
+
+  --gray:                #888780;                  /* เพิ่ม — หมวด อื่นๆ */
+  --gray-bg:             rgba(136,135,128,0.16);   /* เพิ่ม */
+}
+
+@theme inline {
+  --color-background:          var(--background);
+  --color-background-card:     var(--background-card);
+  --color-background-sidebar:  var(--background-sidebar);
+  --color-background-subtle:   var(--background-subtle);
+  --color-foreground:          var(--foreground);
+  --color-foreground-muted:    var(--foreground-muted);
+  --color-foreground-subtle:   var(--foreground-subtle);
+  --color-border:              var(--border);
+  --color-border-strong:       var(--border-strong);
+  --color-primary:             var(--primary);
+  --color-primary-foreground:  var(--primary-foreground);
+  --color-primary-bg:          var(--primary-bg);
+  --color-danger:              var(--danger);
+  --color-danger-bg:           var(--danger-bg);
+  --color-warning:             var(--warning);
+  --color-warning-bg:          var(--warning-bg);
+  --color-info:                var(--info);
+  --color-info-bg:             var(--info-bg);
+  --color-purple:              var(--purple);
+  --color-purple-bg:           var(--purple-bg);
+  --color-gray:                var(--gray);
+  --color-gray-bg:             var(--gray-bg);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-dm-sans), sans-serif;
+}
+
+.btn-animated {
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+}
+
+.btn-animated:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(29,29,29,0.2);
+}
+
+.btn-animated:active {
+  transform: translateY(0) scale(0.99);
+}
