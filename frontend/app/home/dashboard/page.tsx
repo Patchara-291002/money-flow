@@ -2,6 +2,7 @@ import DashboardHeader from "@/app/home/dashboard/components/DashboardHeader";
 import SummaryCards from "@/app/home/dashboard/components/SummaryCards";
 import WeeklyBarChart from "@/app/home/dashboard/components/WeeklyBarChart";
 import CategoryBreakdown from "@/app/home/dashboard/components/CategoryBreakdown";
+import RecentTransactions from "@/app/home/dashboard/components/RecentTransactions";
 
 export default function Dashboard() {
   return (
@@ -15,6 +16,9 @@ export default function Dashboard() {
       <div className="grid grid-cols-[1.15fr_1fr] gap-4 mt-4">
         <WeeklyBarChart />
         <CategoryBreakdown />
+      </div>
+      <div>
+        <RecentTransactions />
       </div>
     </div>
   );

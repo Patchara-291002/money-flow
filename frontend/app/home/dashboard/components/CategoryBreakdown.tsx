@@ -25,7 +25,6 @@ export default function CategoryBreakdown() {
     ...item,
     percentage: ((item.total / totalSum) * 100).toFixed(2),
   }));
-  console.log("percentageData", percentageData);
 
   const listItemProps = (item: CategoryData) => {
     return (
@@ -58,7 +57,7 @@ export default function CategoryBreakdown() {
 
   return (
     <div className="bg-background-card border border-border rounded-2xl p-5">
-      <p className="text-foreground text-xs font-semibold mb-4.5">หมวดหมู่</p>
+      <p className="text-foreground text-base font-semibold mb-4.5">หมวดหมู่</p>
       {percentageData.map((item) => (
         <div key={item.category} className="mb-3 last:mb-0">
           {listItemProps(item)}

@@ -22,9 +22,9 @@ export default function WeeklyBarChart() {
 
   return (
     <div className="bg-background-card border border-border rounded-2xl p-5">
-      <div className="flex items-center justify-between gap-2 text-xs">
-        <p className="text-foreground font-semibold">รายจ่ายล่าสุด</p>
-        <p className="text-foreground-muted font-semibold">บาท</p>
+      <div className="flex items-center justify-between gap-2">
+        <p className="text-foreground text-base font-semibold">รายจ่ายล่าสุด</p>
+        <p className="text-foreground-muted font-semibold text-xs">บาท</p>
       </div>
       <div
         className="grid grid-cols-7 gap-4 mt-4 mb-4"
