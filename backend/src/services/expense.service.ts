@@ -1,6 +1,6 @@
 import prisma from '../lib/prisma'
-import anthropic from '../lib/anthropic'
-import { jsonSchemaOutputFormat } from '@anthropic-ai/sdk/helpers/json-schema'
+import gemini from '../lib/gemini'
+import { Type } from '@google/genai'
 
 export const getExpensesByUser = async (userId: string) => {
   return prisma.expense.findMany({
@@ -26,47 +26,42 @@ export const createExpense = async (data: {
 export const scanReceipt = async (imageBuffer: Buffer, mediaType: 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp') => {
   const categories = await prisma.category.findMany({ select: { id: true, name: true } })
   const categoryIds = categories.map((c) => c.id)
-
-  const outputFormat = jsonSchemaOutputFormat({
-    type: 'object',
-    properties: {
-      merchant: { type: 'string', description: 'ชื่อร้านค้าหรือผู้รับเงินที่ปรากฏในใบเสร็จ/สลิป' },
-      amount: { type: 'number', description: 'จำนวนเงินรวมที่จ่าย/โอน' },
-      date: { type: 'string', description: 'วันที่ทำรายการ รูปแบบ YYYY-MM-DD' },
-      categoryId: {
-        type: 'string',
-        enum: categoryIds,
-        description: 'id ของหมวดหมู่ที่ตรงกับรายการนี้มากที่สุด',
-      },
-    },
-    required: ['merchant', 'amount', 'date', 'categoryId'],
-    additionalProperties: false,
-  })
-
   const categoryListText = categories.map((c) => `- ${c.id}: ${c.name}`).join('\n')
 
-  const response = await anthropic.messages.parse({
-    model: 'claude-sonnet-5',
-    max_tokens: 1024,
-    messages: [
+  const response = await gemini.models.generateContent({
+    model: 'gemini-3.1-flash-lite',
+    contents: [
       {
         role: 'user',
-        content: [
+        parts: [
+          { inlineData: { data: imageBuffer.toString('base64'), mimeType: mediaType } },
           {
-            type: 'image',
-            source: { type: 'base64', media_type: mediaType, data: imageBuffer.toString('base64') },
-          },
-          {
-            type: 'text',
             text: `นี่คือรูปใบเสร็จหรือสลิปโอนเงิน อ่านข้อมูลออกมา แล้วเลือก categoryId ที่ตรงกับรายการนี้มากที่สุดจากหมวดหมู่ที่มีอยู่เท่านั้น:\n${categoryListText}`,
           },
         ],
       },
     ],
-    output_config: { format: outputFormat },
+    config: {
+      responseMimeType: 'application/json',
+      responseSchema: {
+        type: Type.OBJECT,
+        properties: {
+          merchant: { type: Type.STRING, description: 'ชื่อร้านค้าหรือผู้รับเงินที่ปรากฏในใบเสร็จ/สลิป' },
+          amount: { type: Type.NUMBER, description: 'จำนวนเงินรวมที่จ่าย/โอน' },
+          date: { type: Type.STRING, description: 'วันที่ทำรายการ รูปแบบ YYYY-MM-DD' },
+          categoryId: {
+            type: Type.STRING,
+            format: 'enum',
+            enum: categoryIds,
+            description: 'id ของหมวดหมู่ที่ตรงกับรายการนี้มากที่สุด',
+          },
+        },
+        required: ['merchant', 'amount', 'date', 'categoryId'],
+      },
+    },
   })
 
-  return response.parsed_output
+  return JSON.parse(response.text ?? '{}')
 }
 
 // export const getMonthlySummary = async (userId: string, year: number, month: number) => {
