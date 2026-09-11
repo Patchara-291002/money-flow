@@ -13,7 +13,7 @@ export default function RecentTransactions() {
         >
             รายการล่าสุด
         </p>
-        <button
+        <button 
             className="text-primary font-semibold text-xs cursor-pointer"
         >
             ดูทั้งหมด →

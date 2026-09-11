@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { getExpensesByUser, createExpense, getMonthlySummary } from '../services/expense.service'
+import { getExpensesByUser, createExpense, scanReceipt } from '../services/expense.service'
 
 export const listExpenses = async (req: Request, res: Response) => {
   try {
@@ -35,16 +35,24 @@ export const addExpense = async (req: Request, res: Response) => {
   }
 }
 
-export const monthlySummary = async (req: Request, res: Response) => {
+export const scanExpense = async (req: Request, res: Response) => {
   try {
-    const userId = req.user!.userId
-    const year = parseInt(req.query.year as string) || new Date().getFullYear()
-    const month = parseInt(req.query.month as string) || new Date().getMonth() + 1
+    if (!req.file) {
+      res.status(400).json({ message: 'Image file is required' })
+      return
+    }
 
-    const summary = await getMonthlySummary(userId, year, month)
-    res.json(summary)
+    const allowedMediaTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'] as const
+    const mediaType = allowedMediaTypes.find((type) => type === req.file!.mimetype)
+    if (!mediaType) {
+      res.status(400).json({ message: 'Unsupported image type' })
+      return
+    }
+
+    const draft = await scanReceipt(req.file.buffer, mediaType)
+    res.json({ draft })
   } catch (error) {
     console.error(error)
-    res.status(500).json({ message: 'Failed to fetch summary' })
+    res.status(500).json({ message: 'Failed to scan receipt' })
   }
 }

@@ -4,8 +4,8 @@ import { verifyGoogleToken, findOrCreateUser } from '../services/auth.service'
 
 export const googleLogin = async (req: Request, res: Response) => {
   try {
-    console.log('รับ request แล้ว')
-    console.log('body:', req.body)
+    // console.log('รับ request แล้ว')
+    // console.log('body:', req.body)
     const { token } = req.body
     if (!token) {
       res.status(400).json({ message: 'Token is required' })
