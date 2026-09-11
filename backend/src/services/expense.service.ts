@@ -17,10 +17,21 @@ export const createExpense = async (data: {
   merchant: string
   note?: string
   date: Date
-  imageUrl?: string
-  receiptNumber?: string
 }) => {
   return prisma.expense.create({ data })
+}
+
+export const createExpenses = async (
+  items: {
+    userId: string
+    categoryId: string
+    amount: number
+    merchant: string
+    note?: string
+    date: Date
+  }[]
+) => {
+  return prisma.$transaction(items.map((data) => prisma.expense.create({ data })))
 }
 
 export const scanReceipt = async (imageBuffer: Buffer, mediaType: 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp') => {

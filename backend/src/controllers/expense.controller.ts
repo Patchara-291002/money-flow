@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { getExpensesByUser, createExpense, scanReceipt } from '../services/expense.service'
+import { getExpensesByUser, createExpense, createExpenses, scanReceipt } from '../services/expense.service'
 
 export const listExpenses = async (req: Request, res: Response) => {
   try {
@@ -15,7 +15,7 @@ export const listExpenses = async (req: Request, res: Response) => {
 export const addExpense = async (req: Request, res: Response) => {
   try {
     const userId = req.user!.userId
-    const { categoryId, amount, merchant, note, date, imageUrl, receiptNumber } = req.body
+    const { categoryId, amount, merchant, note, date } = req.body
 
     const expense = await createExpense({
       userId,
@@ -24,8 +24,6 @@ export const addExpense = async (req: Request, res: Response) => {
       merchant,
       note,
       date: new Date(date),
-      imageUrl,
-      receiptNumber,
     })
 
     res.json({ expense })
@@ -35,24 +33,63 @@ export const addExpense = async (req: Request, res: Response) => {
   }
 }
 
-export const scanExpense = async (req: Request, res: Response) => {
+export const addExpenses = async (req: Request, res: Response) => {
   try {
-    if (!req.file) {
-      res.status(400).json({ message: 'Image file is required' })
+    const userId = req.user!.userId
+    const { expenses } = req.body
+
+    if (!Array.isArray(expenses) || expenses.length === 0) {
+      res.status(400).json({ message: 'expenses must be a non-empty array' })
       return
     }
 
-    const allowedMediaTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'] as const
-    const mediaType = allowedMediaTypes.find((type) => type === req.file!.mimetype)
-    if (!mediaType) {
-      res.status(400).json({ message: 'Unsupported image type' })
-      return
-    }
+    const items = expenses.map((e) => ({
+      userId,
+      categoryId: e.categoryId,
+      amount: e.amount,
+      merchant: e.merchant,
+      note: e.note,
+      date: new Date(e.date),
+    }))
 
-    const draft = await scanReceipt(req.file.buffer, mediaType)
-    res.json({ draft })
+    const created = await createExpenses(items)
+    res.json({ expenses: created })
   } catch (error) {
     console.error(error)
-    res.status(500).json({ message: 'Failed to scan receipt' })
+    res.status(500).json({ message: 'Failed to create expenses' })
+  }
+}
+
+const allowedMediaTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'] as const
+
+export const scanExpense = async (req: Request, res: Response) => {
+  try {
+    const files = req.files as Express.Multer.File[] | undefined
+    if (!files || files.length === 0) {
+      res.status(400).json({ message: 'At least one image file is required' })
+      return
+    }
+
+    const results = await Promise.all(
+      files.map(async (file) => {
+        const mediaType = allowedMediaTypes.find((type) => type === file.mimetype)
+        if (!mediaType) {
+          return { filename: file.originalname, error: 'Unsupported image type' }
+        }
+
+        try {
+          const draft = await scanReceipt(file.buffer, mediaType)
+          return { filename: file.originalname, draft }
+        } catch (error) {
+          console.error(error)
+          return { filename: file.originalname, error: 'Failed to scan receipt' }
+        }
+      })
+    )
+
+    res.json({ results })
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ message: 'Failed to scan receipts' })
   }
 }
