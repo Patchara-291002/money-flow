@@ -7,9 +7,9 @@ export default function HomeLayout({
 }) {
   
   return (
-    <div className="flex w-full h-screen bg-background">
+    <div className="flex md:flex-row flex-col w-full h-screen bg-background">
       <Sidebar/>
-      <main className="flex-1 overflow-auto">
+      <main className="flex-1 overflow-auto scrollbar-none">
         {children}
       </main>
     </div>
