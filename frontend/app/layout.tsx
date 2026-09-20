@@ -1,21 +1,18 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, DM_Sans, DM_Serif_Display } from "next/font/google";
+import { Inter, Noto_Sans_Thai, DM_Serif_Display } from "next/font/google";
 import SessionWrapper from "./components/SessionWrapper";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
+  weight: ["400", "500", "600", "700"],
   subsets: ["latin"],
+  variable: "--font-inter",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-const dmSans = DM_Sans({
-  subsets: ["latin"],
-  variable: "--font-dm-sans",
+const notoSansThai = Noto_Sans_Thai({
+  weight: ["400", "500", "600", "700"],
+  subsets: ["thai"],
+  variable: "--font-noto-sans-thai",
 });
 
 const dmSerif = DM_Serif_Display({
@@ -37,7 +34,7 @@ export default function RootLayout({
 }>) {
   return (
     <html 
-      className={`${dmSans.variable} ${dmSerif.variable} h-full antialiased`}
+      className={`${inter.variable} ${notoSansThai.variable} ${dmSerif.variable} h-full antialiased`}
     >
       <body className="min-h-full">
         <SessionWrapper>{children}</SessionWrapper>

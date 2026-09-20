@@ -6,7 +6,7 @@ import RecentTransactions from "@/app/home/dashboard/components/RecentTransactio
 
 export default function Dashboard() {
   return (
-    <div className="flex-1 pt-6 px-7 pb-8 overflow-y-auto">
+    <div className="flex-1 px-7 pt-8 pb-10 overflow-y-auto">
       <DashboardHeader />
       <div
         className="mt-5.5"
