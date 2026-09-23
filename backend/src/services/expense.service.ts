@@ -2,12 +2,19 @@ import prisma from '../lib/prisma'
 import gemini from '../lib/gemini'
 import { Type } from '@google/genai'
 
-export const getExpensesByUser = async (userId: string) => {
-  return prisma.expense.findMany({
-    where: { userId },
-    include: { category: true },
-    orderBy: { date: 'desc' },
-  })
+export const getExpensesByUser = async (userId: string, page: number, pageSize: number) => {
+  const [expenses, total] = await Promise.all([
+    prisma.expense.findMany({
+      where: { userId },
+      include: { category: true },
+      orderBy: { date: 'desc' },
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+    }),
+    prisma.expense.count({ where: { userId } }),
+  ])
+
+  return { expenses, total }
 }
 
 export const createExpense = async (data: {
