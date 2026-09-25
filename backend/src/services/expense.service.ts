@@ -7,7 +7,11 @@ export const getExpensesByUser = async (userId: string, page: number, pageSize: 
     prisma.expense.findMany({
       where: { userId },
       include: { category: true },
-      orderBy: { date: 'desc' },
+      orderBy: [
+        {date: 'desc'},
+        {createdAt: 'desc'},
+        {id: 'desc'}
+      ],
       skip: (page - 1) * pageSize,
       take: pageSize,
     }),

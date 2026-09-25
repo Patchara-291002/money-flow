@@ -1,11 +1,15 @@
 import { Request, Response } from 'express'
 import { getExpensesByUser, createExpense, createExpenses, scanReceipt } from '../services/expense.service'
 
-export const listExpenses = async (req: Request, res: Response) => {
+export const getExpenses = async (req: Request, res: Response) => {
   try {
     const userId = req.user!.userId
-    const expenses = await getExpensesByUser(userId)
-    res.json({ expenses })
+    const page = Math.max(1, Number(req.query.page) || 1)
+    const pageSize = Math.min(100, Math.max(1, Number(req.query.pageSize) || 20))
+
+    const { expenses, total } = await getExpensesByUser(userId, page, pageSize)
+
+    res.json({ expenses, total, totalPages: Math.ceil(total / pageSize), page, pageSize })
   } catch (error) {
     console.error(error)
     res.status(500).json({ message: 'Failed to fetch expenses' })
