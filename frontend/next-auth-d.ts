@@ -4,5 +4,6 @@ declare module 'next-auth' {
   interface Session {
     backendToken?: string
     userId?: string
+    error?: 'BackendTokenExpired'
   }
 }

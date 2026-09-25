@@ -1,9 +1,14 @@
 import NextAuth, { NextAuthOptions } from 'next-auth'
 import GoogleProvider from 'next-auth/providers/google'
+import { isJwtExpired } from '@/lib/jwt'
 
 export const authOptions: NextAuthOptions = {
   pages: {
     signIn: '/signin',
+  },
+  session: {
+    strategy: 'jwt',
+    maxAge: 7 * 24 * 60 * 60,
   },
   providers: [
     GoogleProvider({
@@ -39,7 +44,15 @@ export const authOptions: NextAuthOptions = {
       return token
     },
     async session({ session, token }) {
-      session.backendToken = token.backendToken as string
+      const backendToken = token.backendToken as string | undefined
+
+      // NextAuth ต่ออายุ cookie เองทุกครั้งที่ใช้งาน จึงต้องเช็กอายุของ backendToken แยกต่างหาก
+      if (isJwtExpired(backendToken)) {
+        session.error = 'BackendTokenExpired'
+        return session
+      }
+
+      session.backendToken = backendToken
       session.userId = token.userId as string
       return session
     },

@@ -20,10 +20,6 @@ export default function ExpensesTable() {
             .finally(() => setLoading(false));
     }, [session?.backendToken]);
 
-    useEffect(() => {
-        console.log(expenses)
-    }, [expenses])
-
     return (
         <div
             className="overflow-x-scroll scrollbar-thin-custom mt-3 pb-0.5"

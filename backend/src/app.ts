@@ -5,6 +5,7 @@ import cors from 'cors'
 // Import routes
 import authRoutes from './routes/auth.routes'
 import expenseRoutes from './routes/expense.route'
+import categoryRoutes from './routes/category.route'
 
 dotenv.config()
 
@@ -18,6 +19,7 @@ const PORT = process.env.PORT || 3001
 app.use(express.json())
 app.use('/auth', authRoutes)
 app.use('/expenses', expenseRoutes)
+app.use('/categories', categoryRoutes)
 
 app.get('/', (req, res) => {
   res.json({ message: 'Money Flow API is running 🚀' })
