@@ -14,8 +14,8 @@ export default function RecentTransactions() {
   useEffect(() => {
     if (!session?.backendToken) return;
 
-    getExpenses(session.backendToken)
-      .then((data) => setExpenses(data.slice(0, 5)))
+    getExpenses(session.backendToken, {pageSize: 5})
+      .then((data) => setExpenses(data.expenses))
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));
   }, [session?.backendToken]);

@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import ExpensesHeader from "./component/ExpensesHeader";
 import ExpensesFilterBar from "./component/ExpensesFilterBar";
 import ExpensesResult from "./component/ExpensesResult";
@@ -11,7 +12,9 @@ export default function page() {
       <ExpensesHeader />
       <ExpensesFilterBar />
       <ExpensesResult />
-      <ExpensesTable />
+      <Suspense fallback={null}>
+        <ExpensesTable />
+      </Suspense>
     </div>
   )
 }

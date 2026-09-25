@@ -80,6 +80,7 @@ export default function EntryFormModal({ onClose }: EntryFormModalProps) {
                 note: note.trim() || undefined,
                 date: toDateString(selected),
             })
+            onClose()
         } catch (err) {
             console.error(err)
             setError("บันทึกไม่สำเร็จ ลองใหม่อีกครั้ง")
@@ -239,6 +240,7 @@ export default function EntryFormModal({ onClose }: EntryFormModalProps) {
                     </button>
                     <button
                         onClick={handleSubmit}
+                        disabled={isSubmitting}
                         className="h-9.5 px-5 rounded-lg bg-primary text-background text-xs font-semibold cursor-pointer active:translate-y-px"
                     >
                         {isSubmitting ? (
